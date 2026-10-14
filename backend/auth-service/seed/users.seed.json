@@ -1,0 +1,10 @@
+[
+  {
+    "username": "demo1",
+    "passwordHash": "$2b$10$1yYlJwKW0XmubdUIQIbD5emCFiavi3Q97BA.eKkTZIw0M7nU9rPwG"
+  },
+  {
+    "username": "demo2",
+    "passwordHash": "$2b$10$H6QNHRMrBSisV/Gw6Hyxce2tLBZBoCSvbP4WFQGjC.tvcHyWeQX8K"
+  }
+]
