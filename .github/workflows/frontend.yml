@@ -1,0 +1,78 @@
+name: frontend
+
+on:
+  # ทุก PR ที่แก้ไฟล์ของ frontend: lint + build + ลอง build image
+  pull_request:
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend.yml"
+  push:
+    # merge เข้า main แล้วรันซ้ำอีกรอบ
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend.yml"
+    # push tag เช่น frontend-v1.0.0 จะ release image ขึ้น Docker Hub (paths ไม่มีผลกับ tag)
+    tags: ["frontend-v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  # frontend ยังไม่มี unit test จึงตรวจด้วย lint + build (build มี tsc ตรวจ type ด้วย)
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+  # เช็คว่า Dockerfile ยัง build ผ่าน ตั้งแต่ตอน PR (ไม่ push ขึ้น Docker Hub)
+  docker-build:
+    if: github.event_name == 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: frontend
+          push: false
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/frontend-v')
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # ตัดชื่อ tag frontend-v1.0.0 ให้เหลือ 1.0.0
+      - id: version
+        run: echo "version=${GITHUB_REF_NAME#frontend-v}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/build-push-action@v7
+        with:
+          context: frontend
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{ steps.version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest

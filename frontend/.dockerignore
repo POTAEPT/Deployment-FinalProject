@@ -1,0 +1,8 @@
+# ไม่ส่งไฟล์เหล่านี้เข้าไปตอน docker build
+# .env ต้องกันไว้ ไม่งั้น URL ในเครื่องจะไปทับค่า ARG ใน Dockerfile
+node_modules
+dist
+.env
+.env.*
+Dockerfile
+.dockerignore
