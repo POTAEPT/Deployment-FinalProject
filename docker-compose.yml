@@ -1,5 +1,5 @@
 # รันทั้งระบบในเครื่อง: docker compose up -d --build --wait
-# ตอนนี้มีแค่ auth-service service อื่นเพิ่มต่อท้ายใน services: ได้เลย
+# ตอนนี้มี auth-service + frontend (http://localhost:8080) service อื่นเพิ่มต่อใน services: ได้เลย
 
 services:
   auth-service:
@@ -14,6 +14,15 @@ services:
     volumes:
       # ใช้ named volume (ไม่ใช่โฟลเดอร์ในเครื่อง) เพื่อให้ได้สิทธิ์ node:node จาก image
       - auth-data:/app/data
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:8080"
+    # รอ backend ผ่าน healthcheck ก่อนค่อยเปิดหน้าเว็บ (เพิ่ม service อื่นตรงนี้เมื่อมีแล้ว)
+    depends_on:
+      auth-service:
+        condition: service_healthy
 
 volumes:
   auth-data:
