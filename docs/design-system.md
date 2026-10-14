@@ -55,10 +55,13 @@
 
 | ชนิด | ใช้เมื่อ | คลาสตัวอย่าง |
 |---|---|---|
-| Primary | การกระทำหลัก (Start, Login) | `bg-white text-focus font-semibold rounded-lg px-8 py-3 shadow-md hover:opacity-90` (สีข้อความตามโหมด) |
+| Primary | การกระทำหลัก **บนพื้นสีโหมด** (Start) | `bg-white text-focus font-semibold rounded-lg px-8 py-3 shadow-md hover:opacity-90` (สีข้อความตามโหมด) |
+| Filled | การกระทำหลัก **บนการ์ดขาว** (Login, เพิ่มงาน) | `bg-focus text-white font-semibold rounded-lg px-8 py-3 shadow-md hover:opacity-90` (สีพื้นตามโหมด) |
 | Secondary | การกระทำรอง (Reset, Cancel) | `bg-white/20 text-white rounded-lg px-4 py-2 hover:bg-white/30` |
 | Danger | ลบ | `bg-danger text-white rounded-lg px-4 py-2 hover:opacity-90` |
 | Disabled | ใช้ไม่ได้ | เพิ่ม `opacity-50 cursor-not-allowed` และใส่ `disabled` จริงที่ element |
+
+Primary กับ Filled สีกลับกัน: วางปุ่มพื้นขาวบนการ์ดขาวจะกลืนกัน จึงต้องเลือกตามพื้นที่ปุ่มวางอยู่
 
 ปุ่ม Start/Pause เป็นปุ่มเดียวกัน เปลี่ยนข้อความตาม `status` ของ Timer (`idle`/`paused` = START, `running` = PAUSE)
 
