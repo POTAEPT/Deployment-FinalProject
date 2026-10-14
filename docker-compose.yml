@@ -1,0 +1,19 @@
+# รันทั้งระบบในเครื่อง: docker compose up -d --build --wait
+# ตอนนี้มีแค่ auth-service service อื่นเพิ่มต่อท้ายใน services: ได้เลย
+
+services:
+  auth-service:
+    build: ./backend/auth-service
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      # ต้องตรงกับ task-service (ค่าสำหรับพัฒนาเท่านั้น)
+      JWT_SECRET: ${JWT_SECRET:-dev-secret}
+      USERS_FILE: /app/data/users.json
+    volumes:
+      # ใช้ named volume (ไม่ใช่โฟลเดอร์ในเครื่อง) เพื่อให้ได้สิทธิ์ node:node จาก image
+      - auth-data:/app/data
+
+volumes:
+  auth-data:

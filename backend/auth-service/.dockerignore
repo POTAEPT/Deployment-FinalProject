@@ -1,0 +1,9 @@
+# ไม่ส่งไฟล์เหล่านี้เข้าไปตอน docker build (build เร็วขึ้น และ .env ไม่หลุดเข้า image)
+node_modules
+dist
+data
+coverage
+.env
+**/*.test.ts
+Dockerfile
+.dockerignore
