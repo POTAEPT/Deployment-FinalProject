@@ -194,7 +194,7 @@ data: {"type":"timer_end","message":"หมดเวลา!","time":"2026-01-01T
 | Variable | ใช้ใน | ค่าเริ่มต้น | ความหมาย |
 |---|---|---|---|
 | `PORT` | ทุก service | 300x ตามตาราง | port ที่เปิด |
-| `JWT_SECRET` | auth, task | (ตั้งใน compose) | ต้องเป็นค่าเดียวกันทั้งสองตัว |
+| `JWT_SECRET` | auth, task | ในเครื่องใช้ `dev-secret` (ตั้งผ่านไฟล์ `.env` ที่ก๊อปจาก `.env.example`), บน Docker ตั้งใน `docker-compose.yml` | ต้องเป็นค่าเดียวกันทั้งสองตัว |
 | `USERS_FILE` | auth | `./data/users.json` | path ไฟล์เก็บ users (อยู่บน Docker volume) |
 | `HISTORY_URL` | timer | `http://history-service:3004` | ปลายทางบันทึกประวัติ |
 | `NOTIFY_URL` | timer | `http://notification-service:3005` | ปลายทางแจ้งเตือน |

@@ -29,7 +29,7 @@
 | 2. Container + CI/CD | Dockerfile, workflow ต่อ service, `docker-compose.yml` + healthcheck | PR รัน test อัตโนมัติ, `docker compose up` ขึ้นครบ | _TBD_ |
 | 3. Frontend | หน้า Login, Timer, Task, History, Notification | ใช้งานครบ flow บนเบราว์เซอร์ | _TBD_ |
 | 4. ทดสอบรวม | Robot API + Integration test, job `integration-tests` | เคสใน Test Spec ผ่านและรันใน CI ได้ | _TBD_ |
-| 5. Release + นำเสนอ | tag `v1.0.0` ทุกชิ้น, ตรวจ image บน Docker Hub, ซ้อม demo | image ครบพร้อม version, ทุกคนอธิบายส่วนตัวเองได้ | _TBD_ |
+| 5. Release + นำเสนอ | tag `<service>-v1.0.0` ของแต่ละ service และ `frontend-v1.0.0` (เช่น `auth-service-v1.0.0`), ตรวจ image บน Docker Hub, ซ้อม demo | image ครบพร้อม version, ทุกคนอธิบายส่วนตัวเองได้ | _TBD_ |
 
 เฟส 1 และ 3 ทำขนานกันได้ (frontend ใช้ API contract เป็นหลัก ระหว่างรอ service จริงใช้ข้อมูลจำลองไปก่อน)
 

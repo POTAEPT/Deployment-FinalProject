@@ -26,8 +26,8 @@ flowchart LR
 |---|---|---|
 | Branch | `feature/<เลข issue>-<ชื่อสั้น>` | `feature/6-auth-api`, `feature/7-auth-unit-test` |
 | Branch แก้บั๊ก | `fix/<เลข issue>-<ชื่อสั้น>` | `fix/21-timer-negative` |
-| Commit | `<service>: <สิ่งที่ทำ>` | `auth: add login endpoint` |
-| PR title | เหมือน title ของ issue | `[auth] ทำ API register / login` |
+| Commit | ข้อความอะไรก็ได้ที่อ่านรู้เรื่อง (แนะนำรูปแบบ `<service>: <สิ่งที่ทำ>`) เพราะตอน Squash and merge ชื่อ commit บน main จะใช้ชื่อ PR แทน | `auth: add login endpoint` |
+| PR title | **ต้องเป็นรูปแบบ `[service] ชื่อ issue`** เพราะจะกลายเป็นชื่อ commit บน main | `[auth] ทำ API register / login` |
 | Release tag | `<service>-vX.Y.Z` | `auth-service-v1.0.0`, `frontend-v1.0.0` |
 
 ใน PR description ต้องเขียน `Closes #<เลข issue>` เพื่อให้ GitHub ปิด issue ให้เองเมื่อ merge

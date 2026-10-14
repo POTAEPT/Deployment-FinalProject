@@ -49,7 +49,7 @@
 | TS-03-01 | API | Create | เพิ่ม task ใหม่ | Login แล้ว มี token | 1. POST /api/tasks พร้อม Authorization<br>2. ตรวจ response | title=อ่านหนังสือ | HTTP 201, task มี id, completed=false | Robot | Member 3 | Not Run |  |
 | TS-03-02 | API | List | ดึงรายการ task | มี task 1 รายการ | 1. GET /api/tasks | - | HTTP 200, tasks เป็น array และมี task ที่สร้าง | Robot | Member 3 | Not Run |  |
 | TS-03-03 | API | Update | ติ๊ก task ว่าเสร็จ | มี task อยู่ | 1. PATCH /api/tasks/{id} completed=true | completed=true | HTTP 200, completed=true | Robot | Member 3 | Not Run |  |
-| TS-03-04 | API | Delete | ลบ task | มี task อยู่ | 1. DELETE /api/tasks/{id}<br>2. GET /api/tasks | - | HTTP 200/204 และ task หายจากรายการ | Robot | Member 3 | Not Run |  |
+| TS-03-04 | API | Delete | ลบ task | มี task อยู่ | 1. DELETE /api/tasks/{id}<br>2. GET /api/tasks | - | HTTP 200 พร้อม {"status":"success"} และ task หายจากรายการ | Robot | Member 3 | Not Run |  |
 | TS-03-05 | Unit | Validation | title ว่างต้องถูกปฏิเสธ | - | 1. เรียก validateTitle('') | title='' | คืน false / throw error | Vitest | Member 3 | Not Run |  |
 | TS-03-06 | Unit | Logic | toggle สถานะ completed | - | 1. เรียก toggleTask(task ที่ completed=false) | completed=false | ผลลัพธ์ completed=true | Vitest | Member 3 | Not Run |  |
 | TS-03-07 | API | Auth | เรียกโดยไม่มี token | - | 1. GET /api/tasks ไม่ใส่ Authorization | - | HTTP 401 | Robot | Member 3 | Not Run |  |

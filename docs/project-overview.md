@@ -46,14 +46,14 @@ React + Vite + TypeScript + Tailwind (frontend) · Node.js 22 + Express + TypeSc
 ## วิธีทำงานของทีม
 - GitHub Flow: Issue → branch → Pull Request → review → Squash merge (ดู [git-workflow.md](git-workflow.md))
 - 1 repo (monorepo) แยกโฟลเดอร์ต่อ service แต่ละ service มี pipeline, Docker image และ version ของตัวเอง
-- งานทั้งหมดติดตามที่ GitHub Issues, Milestone `Pomodoro` และ Project board (ดู [project-plan.md](project-plan.md))
+- งานทั้งหมดติดตามที่ GitHub Issues และ Milestone `Pomodoro` (ดู [project-plan.md](project-plan.md))
 
 ## เอกสารในโฟลเดอร์ docs
 
 | ไฟล์ | เนื้อหา |
 |---|---|
 | [project-overview.md](project-overview.md) | ภาพรวมโปรเจกต์ (ไฟล์นี้) |
-| [project-plan.md](project-plan.md) | ผู้รับผิดชอบ เฟส ความเสี่ยง สิ่งที่ต้องตัดสินใจ |
+| [project-plan.md](project-plan.md) | ผู้รับผิดชอบ เฟส Milestone และ Issue |
 | [architecture.md](architecture.md) | โครงสร้างระบบ service, port, โครงโฟลเดอร์, tech stack |
 | [system-design.md](system-design.md) | การทำงานภายใน flow, การเก็บข้อมูล, pipeline |
 | [api-contract.md](api-contract.md) | endpoint และรูปแบบ JSON ของทุก service |
