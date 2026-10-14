@@ -26,8 +26,8 @@
 | TS-01-02 | API | Register | สมัครด้วย username ซ้ำ | มี testuser1 อยู่แล้ว | 1. POST /api/auth/register ซ้ำด้วย username เดิม | username=testuser1 | HTTP 409, status=error, มี message แจ้งว่าซ้ำ | Robot | Member 1 | Not Run |  |
 | TS-01-03 | API | Login | Login สำเร็จ ได้ token | มี testuser1 อยู่แล้ว | 1. POST /api/auth/login<br>2. ตรวจ token | username=testuser1, password=Passw0rd! | HTTP 200, status=success, token ไม่ว่าง | Robot | Member 1 | Not Run |  |
 | TS-01-04 | API | Login | Login รหัสผ่านผิด | มี testuser1 อยู่แล้ว | 1. POST /api/auth/login ด้วยรหัสผิด | password=wrong | HTTP 401, status=error, ไม่มี token | Robot | Member 1 | Not Run |  |
-| TS-01-05 | Unit | Password | hash รหัสผ่านด้วย bcrypt | - | 1. เรียกฟังก์ชัน hashPassword('Passw0rd!')<br>2. ตรวจผล | plain=Passw0rd! | ผลลัพธ์ไม่เท่ากับ plain และ comparePassword ให้ true | Vitest | Member 1 | Not Run |  |
-| TS-01-06 | Unit | Token | ตรวจ JWT ที่หมดอายุ/ปลอม | - | 1. สร้าง token ปลอม<br>2. เรียก verifyToken | token=abc.def.ghi | verifyToken throw error / คืน null | Vitest | Member 1 | Not Run |  |
+| TS-01-05 | Unit | Password | hash รหัสผ่านด้วย bcrypt | - | 1. เรียกฟังก์ชัน hashPassword('Passw0rd!')<br>2. ตรวจผล | plain=Passw0rd! | ผลลัพธ์ไม่เท่ากับ plain และ comparePassword ให้ true | Vitest | Member 1 | Pass | `backend/auth-service/src/lib/password.test.ts` |
+| TS-01-06 | Unit | Token | ตรวจ JWT ที่หมดอายุ/ปลอม | - | 1. สร้าง token ปลอม<br>2. เรียก verifyToken | token=abc.def.ghi | verifyToken throw error / คืน null | Vitest | Member 1 | Pass | `backend/auth-service/src/lib/token.test.ts` (ทดสอบทั้ง token ปลอมและหมดอายุ) |
 | TS-01-07 | API | Validation | Login โดยไม่ส่ง password | - | 1. POST /api/auth/login เฉพาะ username | username=testuser1 | HTTP 400, status=error | Robot | Member 1 | Not Run |  |
 
 ## TS-02 Timer
