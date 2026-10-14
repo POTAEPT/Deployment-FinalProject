@@ -14,7 +14,7 @@ flowchart LR
 ```
 
 ## กฎสำคัญ
-1. **ห้าม push ตรงเข้า `main`** (เปิด branch protection แล้ว) ทุกอย่างต้องผ่าน PR
+1. **ห้าม push ตรงเข้า `main`** ทีมตกลงกันว่าไม่ push ตรงเข้า main ทุกการเปลี่ยนแปลงต้องผ่าน Pull Request (ยังไม่ได้เปิด branch protection บน GitHub ใช้ความไว้ใจกันในทีม)
 2. **หนึ่ง issue = หนึ่ง branch = หนึ่ง PR**
 3. PR ต้องผ่าน CI (job `test`) และมีคน review อย่างน้อย 1 คน (ไม่ใช่ตัวเอง) ก่อน merge
 4. แก้เฉพาะโฟลเดอร์ service ของตัวเอง ถ้าต้องแก้ของคนอื่นหรือไฟล์กลาง ให้บอกเจ้าของก่อน
@@ -96,7 +96,7 @@ git push origin auth-service-v1.0.0
 ## ถ้าติดปัญหา
 | อาการ | วิธีแก้ |
 |---|---|
-| push เข้า main ไม่ได้ | ถูกต้องแล้ว ต้องเปิด PR |
+| เผลอ push ตรงเข้า main | GitHub ไม่บล็อกให้ (ยังไม่ได้เปิด branch protection) ผิดข้อตกลงของทีม ให้แจ้ง PM ทันที อย่าแก้เองด้วย force push |
 | CI ไม่รัน | เช็คว่าแก้ไฟล์ใน `backend/<service>/` (workflow ใช้ `paths:` กรองอยู่) |
 | conflict | `git fetch origin` แล้ว `git merge origin/main` แก้ไฟล์ที่ชนกัน |
 | commit ผิดที่ (ลืมแตก branch) | แจ้ง PM ก่อน อย่าลองแก้เองด้วย `git reset --hard` เพราะอาจทำงานหาย |
