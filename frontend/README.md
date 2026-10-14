@@ -99,7 +99,7 @@ import { Button, Card, EmptyState, ErrorMessage, Loading, TextField } from "../u
 
 | Component | ใช้ยังไง |
 |---|---|
-| `Button` | `variant="primary"` (ค่าเริ่มต้น, ใส่ `mode` ให้สีตัวหนังสือตามโหมด) / `"secondary"` / `"danger"`, ใส่ `disabled` ได้ |
+| `Button` | `variant="primary"` (ค่าเริ่มต้น, ปุ่มหลัก**บนพื้นสีโหมด**) / `"filled"` (ปุ่มหลัก**บนการ์ดขาว** เช่น Login, เพิ่มงาน) / `"secondary"` / `"danger"`, ใส่ `mode` ให้สีตามโหมด, ใส่ `disabled` ได้ |
 | `Card` | `variant="solid"` (การ์ดขาว, ค่าเริ่มต้น) / `"glass"` (โปร่งแสงบนพื้นสีโหมด เช่น Timer) |
 | `TextField` | `label` (บังคับ), `error` (ข้อความใต้ช่อง) + props ของ `<input>` ทั้งหมด |
 | `Loading` | `<Loading />` แสดง "กำลังโหลด..." |
