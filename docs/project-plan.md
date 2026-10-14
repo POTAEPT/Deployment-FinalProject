@@ -5,7 +5,7 @@
 
 | บทบาท | สมาชิก | หน้าที่หลัก |
 |---|---|---|
-| Project Manager (PM) | _ชื่อ_ | วางแผน ตั้ง repo / branch protection / Secrets / Project board, ติดตามงาน, ดูแล release |
+| Project Manager (PM) | _ชื่อ_ | วางแผน ตั้ง repo / Secrets / Project board, ติดตามงาน, ดูแล release |
 | Tester | _ชื่อ_ | Test Spec, Robot Framework test, job `integration-tests` ใน CI |
 | Developer | ทุกคน | เขียน service ของตัวเอง + Unit test + Dockerfile + pipeline ของตัวเอง |
 
@@ -24,7 +24,7 @@
 
 | เฟส | งาน | ผลลัพธ์ที่ต้องได้ | กำหนด |
 |---|---|---|---|
-| 0. เตรียมการ | สร้าง repo + โครงโฟลเดอร์, branch protection, Project board, Docker Hub + Secrets, ตกลง API contract | repo พร้อมใช้, `docs/api-contract.md` ยืนยันแล้ว | _TBD_ |
+| 0. เตรียมการ | สร้าง repo + โครงโฟลเดอร์, Project board, Docker Hub + Secrets, ตกลง API contract | repo พร้อมใช้, `docs/api-contract.md` ยืนยันแล้ว | _TBD_ |
 | 1. Backend | แต่ละคนทำ service ของตัวเอง (API + Unit test) | ทุก service รันได้และ `npm test` ผ่าน | _TBD_ |
 | 2. Container + CI/CD | Dockerfile, workflow ต่อ service, `docker-compose.yml` + healthcheck | PR รัน test อัตโนมัติ, `docker compose up` ขึ้นครบ | _TBD_ |
 | 3. Frontend | หน้า Login, Timer, Task, History, Notification | ใช้งานครบ flow บนเบราว์เซอร์ | _TBD_ |
