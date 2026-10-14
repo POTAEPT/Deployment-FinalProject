@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@theme {
+  --color-focus: #BA4949;
+  --color-short: #38858A;
+  --color-long: #397097;
+  --color-ink: #2D2D2D;
+  --color-muted: #6B7280;
+  --color-line: #E5E7EB;
+  --color-success: #16A34A;
+  --color-danger: #DC2626;
+
+  --font-sans: "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
+}
