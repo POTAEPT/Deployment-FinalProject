@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   calcEndTime,
   calcTimeLeft,
@@ -29,6 +29,10 @@ describe("timer calculations", () => {
 
 describe("timer state", () => {
   const durations: TimerDurations = { focus: 1500, short_break: 300, long_break: 900 };
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
   it("starts each mode with its configured duration and server endTime", () => {
     const timer = new Timer(durations, () => new Date("2026-01-01T10:00:00.000Z"));
@@ -87,5 +91,40 @@ describe("timer state", () => {
     expect(() => createTimerDurations({ FOCUS_SECONDS: "0" })).toThrow(
       "FOCUS_SECONDS must be a positive integer",
     );
+  });
+
+  it("finishes automatically and calls the completion handler once", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-01T10:00:00.000Z"));
+    const onComplete = vi.fn();
+    const timer = new Timer({ focus: 1, short_break: 2, long_break: 3 }, undefined, onComplete);
+
+    timer.start("focus");
+    await vi.advanceTimersByTimeAsync(1000);
+
+    expect(timer.getStatus()).toEqual({
+      status: "idle",
+      mode: "focus",
+      timeLeft: 0,
+      endTime: null,
+    });
+    expect(onComplete).toHaveBeenCalledExactlyOnceWith("focus");
+  });
+
+  it("cancels completion while paused and reschedules it on resume", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-01T10:00:00.000Z"));
+    const onComplete = vi.fn();
+    const timer = new Timer({ focus: 2, short_break: 2, long_break: 3 }, undefined, onComplete);
+
+    timer.start("focus");
+    await vi.advanceTimersByTimeAsync(1000);
+    timer.pause();
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(onComplete).not.toHaveBeenCalled();
+
+    timer.resume();
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(onComplete).toHaveBeenCalledExactlyOnceWith("focus");
   });
 });

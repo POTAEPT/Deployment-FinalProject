@@ -10,6 +10,8 @@ export type TimerStatus = {
   endTime: string | null;
 };
 
+export type TimerCompletionHandler = (mode: TimerMode) => void | Promise<void>;
+
 const DEFAULT_DURATIONS: TimerDurations = {
   focus: 1500,
   short_break: 300,
@@ -48,10 +50,13 @@ export function calcTimeLeft(endTime: string, now: Date): number {
 
 export class Timer {
   private state: TimerStatus;
+  private completionTimeout: ReturnType<typeof setTimeout> | undefined;
+  private completionGeneration = 0;
 
   constructor(
     private readonly durations: TimerDurations = DEFAULT_DURATIONS,
     private readonly getNow: () => Date = () => new Date(),
+    private readonly onComplete: TimerCompletionHandler = () => {},
   ) {
     this.state = {
       status: "idle",
@@ -73,6 +78,7 @@ export class Timer {
   }
 
   start(mode: TimerMode): TimerStatus {
+    this.cancelCompletion();
     const timeLeft = this.durations[mode];
     this.state = {
       status: "running",
@@ -80,6 +86,7 @@ export class Timer {
       timeLeft,
       endTime: calcEndTime(this.getNow(), timeLeft),
     };
+    this.scheduleCompletion();
     return this.getStatus();
   }
 
@@ -87,6 +94,7 @@ export class Timer {
     if (this.state.status !== "running") return null;
 
     const current = this.getStatus();
+    this.cancelCompletion();
     this.state = { ...current, status: "paused", endTime: null };
     return { ...this.state };
   }
@@ -99,10 +107,12 @@ export class Timer {
       status: "running",
       endTime: calcEndTime(this.getNow(), this.state.timeLeft),
     };
+    this.scheduleCompletion();
     return this.getStatus();
   }
 
   reset(): TimerStatus {
+    this.cancelCompletion();
     this.state = {
       status: "idle",
       mode: this.state.mode,
@@ -110,5 +120,35 @@ export class Timer {
       endTime: null,
     };
     return { ...this.state };
+  }
+
+  private scheduleCompletion(): void {
+    const generation = this.completionGeneration;
+    this.completionTimeout = setTimeout(() => {
+      if (generation !== this.completionGeneration || this.state.status !== "running") return;
+
+      this.completionTimeout = undefined;
+      const completedMode = this.state.mode;
+      this.state = {
+        status: "idle",
+        mode: completedMode,
+        timeLeft: 0,
+        endTime: null,
+      };
+
+      try {
+        void Promise.resolve(this.onComplete(completedMode)).catch((error: unknown) => {
+          console.error("Timer completion handler failed", error);
+        });
+      } catch (error) {
+        console.error("Timer completion handler failed", error);
+      }
+    }, this.state.timeLeft * 1000);
+  }
+
+  private cancelCompletion(): void {
+    this.completionGeneration += 1;
+    if (this.completionTimeout !== undefined) clearTimeout(this.completionTimeout);
+    this.completionTimeout = undefined;
   }
 }
