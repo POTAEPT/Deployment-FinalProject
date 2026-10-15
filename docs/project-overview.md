@@ -59,6 +59,7 @@ React + Vite + TypeScript + Tailwind (frontend) · Node.js 22 + Express + TypeSc
 | [api-contract.md](api-contract.md) | endpoint และรูปแบบ JSON ของทุก service |
 | [git-workflow.md](git-workflow.md) | ขั้นตอนทำงานด้วย Git/GitHub และการ release |
 | [test-spec.md](test-spec.md) | รายการเคสทดสอบทุก service |
+| [test-report.md](test-report.md) | ผลการทดสอบ และคำอธิบายแต่ละชั้นของการทดสอบ |
 
 ## วิธีรันทั้งระบบในเครื่อง (เมื่อพร้อมแล้ว)
 ```bash
