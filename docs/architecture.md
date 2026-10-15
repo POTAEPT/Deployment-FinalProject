@@ -42,9 +42,9 @@ flowchart LR
 │   ├── task-service/
 │   ├── history-service/
 │   └── notification-service/
-│       # แต่ละตัวมี src/, package.json, Dockerfile, tests
+│       # แต่ละตัวมี src/ (รวม unit + API test *.test.ts), package.json, Dockerfile
 ├── frontend/
-├── tests/                  # Robot Framework (API + Integration)
+├── tests/                  # Integration test ข้าม service (Vitest ยิง localhost:300x หลัง docker compose up)
 ├── docs/                   # เอกสารทั้งหมด
 ├── .github/workflows/      # pipeline ของแต่ละ service + integration-tests
 └── docker-compose.yml      # รันทั้งระบบในเครื่อง
@@ -61,7 +61,8 @@ Workflow ต้องอยู่ใน `.github/workflows/` ที่ root เ�
 | Auth | jsonwebtoken + bcryptjs |
 | Real-time | Server-Sent Events (SSE) |
 | Unit test | Vitest |
-| API / Integration test | Robot Framework + RequestsLibrary |
+| API test | Vitest + supertest (ยิงเข้าแอปในโปรเซสเดียวกัน) |
+| Integration test | Vitest ยิง HTTP ข้าม service ที่ยกด้วย docker compose |
 | Container | Docker (multi-stage, `node:22-alpine`) + docker compose |
 | CI/CD | GitHub Actions |
 | Registry | Docker Hub |

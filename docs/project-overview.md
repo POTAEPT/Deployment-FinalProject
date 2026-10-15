@@ -24,7 +24,7 @@
 ### อยู่นอกขอบเขต (ไม่ทำ)
 - Database จริง (อาจารย์ไม่บังคับ: เก็บเฉพาะ users ของ Login เป็นไฟล์ JSON บน Docker volume)
 - Mobile app / push notification
-- UI automation (E2E ด้วย browser) ใช้ Robot ทดสอบเฉพาะ API
+- UI automation (E2E ด้วย browser) ทดสอบเฉพาะ API ด้วย Vitest
 - ระบบชำระเงิน/ธีมเสริม/สถิติรายสัปดาห์แบบ pomofocus เต็มรูปแบบ
 
 ## Services (สรุปสั้น)
@@ -41,7 +41,7 @@
 ภาพรวมทางเทคนิคดูที่ [architecture.md](architecture.md) และ [system-design.md](system-design.md)
 
 ## Tech Stack
-React + Vite + TypeScript + Tailwind (frontend) · Node.js 22 + Express + TypeScript (backend) · Vitest (unit test) · Robot Framework (API/Integration test) · Docker + docker compose · GitHub Actions · Docker Hub
+React + Vite + TypeScript + Tailwind (frontend) · Node.js 22 + Express + TypeScript (backend) · Vitest (unit test) · Vitest + supertest (API test) · Vitest (integration test ข้าม service) · Docker + docker compose · GitHub Actions · Docker Hub
 
 ## วิธีทำงานของทีม
 - GitHub Flow: Issue → branch → Pull Request → review → Squash merge (ดู [git-workflow.md](git-workflow.md))

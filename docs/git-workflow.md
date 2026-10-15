@@ -69,11 +69,11 @@ git merge origin/main
 - `git merge origin/main`: รวมของล่าสุดจาก main เข้ามาใน branch เรา ถ้ามี conflict ให้แก้ไฟล์ตามที่ Git บอก แล้ว `git add` และ `git commit` อีกครั้ง
 
 ## ตอนเปิด PR ตรวจให้ครบ
-- [ ] `npm test` ผ่านในเครื่อง
+- [ ] `npm test` ผ่านในเครื่อง (unit + API test ด้วย supertest)
 - [ ] PR เขียน `Closes #<เลข issue>`
 - [ ] ไม่ได้ commit `node_modules/`, `dist/`, `.env`, `data/users.json`
 - [ ] แก้เฉพาะไฟล์ของ service/issue นี้
-- [ ] ถ้าแก้ API ให้อัปเดต `docs/api-contract.md` และแจ้ง Tester
+- [ ] ถ้าแก้ API ให้อัปเดต `docs/api-contract.md` และ API test ของ service ตัวเอง แล้วแจ้ง Tester (integration test อาจกระทบ)
 
 ## Merge
 - ใช้ **Squash and merge** (รวมทุก commit ใน PR เป็น commit เดียวบน main ประวัติสะอาดอ่านง่าย)
