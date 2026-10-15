@@ -1,6 +1,6 @@
 # API Contract
 
-เอกสารนี้คือ "สัญญา" ระหว่าง service และ frontend ทุกคนต้องทำตามนี้ ถ้าจะเปลี่ยน endpoint หรือ field ให้แก้เอกสารนี้ผ่าน Pull Request และแจ้งทีมก่อน (Test Spec และ Robot test อ้างอิงเอกสารนี้)
+เอกสารนี้คือ "สัญญา" ระหว่าง service และ frontend ทุกคนต้องทำตามนี้ ถ้าจะเปลี่ยน endpoint หรือ field ให้แก้เอกสารนี้ผ่าน Pull Request และแจ้งทีมก่อน (Test Spec และ test ทุกชั้นอ้างอิงเอกสารนี้)
 
 ## กติกากลาง
 

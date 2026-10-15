@@ -75,7 +75,7 @@ sequenceDiagram
 
 - รหัสผ่านเก็บเป็น hash เท่านั้น
 - มี `users.seed.json` สำหรับบัญชีทดสอบ (hash แล้ว ใช้เฉพาะ test) ถ้ายังไม่มีไฟล์บน volume จะคัดลอกจาก seed
-- Robot test ต้องสร้างข้อมูลของตัวเอง ห้ามพึ่งข้อมูลเดิมที่ค้างอยู่
+- test ทุกชั้นต้องสร้างข้อมูลของตัวเอง ห้ามพึ่งข้อมูลเดิมที่ค้างอยู่
 
 ## 6. การจัดการ Error
 - ทุก service ตอบรูปแบบเดียวกัน `{ "status": "error", "message": "..." }`
@@ -91,20 +91,20 @@ flowchart LR
     M --> TAG[push tag<br/>auth-service-v1.0.0]
     TAG --> R[Job release<br/>build image + push]
     R --> DH[(Docker Hub<br/>user/auth-service:1.0.0, latest)]
-    PR --> IT[Job integration-tests<br/>compose up + Robot]
+    PR --> IT[Job integration-tests<br/>compose up + Vitest]
 ```
 
 - ทุก service มี workflow ของตัวเอง ใช้ `paths:` ให้รันเฉพาะเมื่อไฟล์ของ service นั้นเปลี่ยน
 - Release ทำด้วย **git tag** รูปแบบ `<service>-vX.Y.Z` แล้ว workflow สร้าง image ชื่อ `<DOCKERHUB_USERNAME>/<service>` พร้อม tag เวอร์ชันและ `latest`
 - Secrets ที่ใช้: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`
-- `integration-tests` รัน `docker compose up -d --build --wait` (รอจน healthcheck `/health` ผ่าน) แล้วรัน Robot ยิง API จริง
+- `integration-tests` รัน `docker compose up -d --build --wait` (รอจน healthcheck `/health` ผ่าน) แล้วรัน Vitest ใน `tests/` ยิง API จริงข้าม service
 
 ## 8. ทดสอบ
 
 | ชั้น | เครื่องมือ | ผู้เขียน | ทดสอบอะไร |
 |---|---|---|---|
 | Unit | Vitest | Developer ของแต่ละ service | ฟังก์ชันเดี่ยว ไม่ใช้ network |
-| API | Robot Framework | Tester | endpoint ของแต่ละ service ตาม Test Spec |
-| Integration | Robot Framework | Tester + Dev | การทำงานข้าม service (IT-01 ถึง IT-04) |
+| API | Vitest + supertest | Developer ของแต่ละ service | endpoint ของ service ตาม Test Spec ยิงเข้าแอปในโปรเซสเดียวกัน (ไม่เปิด port ไม่เรียก service อื่น) รันใน job `test` |
+| Integration | Vitest (`tests/` ที่ root) | Tester | การทำงานข้าม service (IT-01 ถึง IT-04) ยิง `http://localhost:300x` หลัง `docker compose up` รันใน job `integration-tests` |
 
 ดูรายการเคสทั้งหมดที่ [test-spec.md](test-spec.md)
