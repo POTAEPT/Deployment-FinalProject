@@ -20,6 +20,12 @@ describe("timer calculations", () => {
     );
   });
 
+  it("returns zero when endTime is exactly now", () => {
+    expect(calcTimeLeft("2026-01-01T10:00:00.000Z", new Date("2026-01-01T10:00:00.000Z"))).toBe(
+      0,
+    );
+  });
+
   it("rounds a partial second up so the timer does not finish early", () => {
     expect(calcTimeLeft("2026-01-01T10:00:01.000Z", new Date("2026-01-01T10:00:00.001Z"))).toBe(
       1,
