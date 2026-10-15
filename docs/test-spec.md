@@ -40,8 +40,8 @@
 | TS-02-02 | API | Start | เริ่มโหมด short break | - | 1. POST /api/timer/start mode=short_break | mode=short_break | HTTP 200, timeLeft=300 | Vitest | Tester | Pass | |
 | TS-02-03 | API | Pause/Resume | Pause แล้ว Resume | Timer กำลังทำงาน | 1. POST /api/timer/pause<br>2. POST /api/timer/resume | - | pause: status=paused และ timeLeft ค้างค่า; resume: status=running และ endTime ใหม่ | Vitest | Tester | Pass | ใช้โหมด `long_break` เพราะ focus ใน CI สั้นมาก จะจบก่อนกด pause |
 | TS-02-04 | API | Reset | Reset timer | Timer กำลังทำงาน | 1. POST /api/timer/reset | - | status=idle, timeLeft กลับเป็นค่าเริ่มต้นของโหมด | Vitest | Tester | Pass | ใช้โหมด `long_break` เช่นเดียวกับ TS-02-03 |
-| TS-02-05 | Unit | Calc | คำนวณ endTime | - | 1. เรียก calcEndTime(now, 1500) | now=2026-01-01T10:00:00Z | คืน 2026-01-01T10:25:00Z | Vitest | Member 2 | Not Run |  |
-| TS-02-06 | Unit | Calc | คำนวณ timeLeft ไม่ติดลบ | - | 1. เรียก calcTimeLeft(endTime ที่ผ่านไปแล้ว) | endTime อดีต | คืน 0 ไม่ใช่ค่าติดลบ | Vitest | Member 2 | Not Run |  |
+| TS-02-05 | Unit | Calc | คำนวณ endTime | - | 1. เรียก calcEndTime(now, 1500) | now=2026-01-01T10:00:00Z | คืน 2026-01-01T10:25:00Z | Vitest | Member 2 | Pass | `backend/timer-service/src/lib/timer.test.ts` |
+| TS-02-06 | Unit | Calc | คำนวณ timeLeft ไม่ติดลบ | - | 1. เรียก calcTimeLeft(endTime ที่ผ่านไปแล้ว) | endTime อดีต | คืน 0 ไม่ใช่ค่าติดลบ | Vitest | Member 2 | Pass | `backend/timer-service/src/lib/timer.test.ts` |
 | TS-02-07 | API | Validation | mode ไม่ถูกต้อง | - | 1. POST /api/timer/start mode=xyz | mode=xyz | HTTP 400, status=error | Vitest | Tester | Pass | |
 
 ## TS-03 Task
@@ -52,8 +52,8 @@
 | TS-03-02 | API | List | ดึงรายการ task | มี task 1 รายการ | 1. GET /api/tasks | - | HTTP 200, tasks เป็น array และมี task ที่สร้าง | Vitest | Tester | Pass | |
 | TS-03-03 | API | Update | ติ๊ก task ว่าเสร็จ | มี task อยู่ | 1. PATCH /api/tasks/{id} completed=true | completed=true | HTTP 200, completed=true | Vitest | Tester | Pass | |
 | TS-03-04 | API | Delete | ลบ task | มี task อยู่ | 1. DELETE /api/tasks/{id}<br>2. GET /api/tasks | - | HTTP 200 พร้อม {"status":"success"} และ task หายจากรายการ | Vitest | Tester | Pass | |
-| TS-03-05 | Unit | Validation | title ว่างต้องถูกปฏิเสธ | - | 1. เรียก validateTitle('') | title='' | คืน false / throw error | Vitest | Member 3 | Not Run |  |
-| TS-03-06 | Unit | Logic | toggle สถานะ completed | - | 1. เรียก toggleTask(task ที่ completed=false) | completed=false | ผลลัพธ์ completed=true | Vitest | Member 3 | Not Run |  |
+| TS-03-05 | Unit | Validation | title ว่างต้องถูกปฏิเสธ | - | 1. เรียก validateTitle('') | title='' | คืน false / throw error | Vitest | Member 3 | Pass | `backend/task-service/src/lib/task.test.ts` (คืน null) |
+| TS-03-06 | Unit | Logic | toggle สถานะ completed | - | 1. เรียก toggleTask(task ที่ completed=false) | completed=false | ผลลัพธ์ completed=true | Vitest | Member 3 | Pass | `backend/task-service/src/lib/task.test.ts` |
 | TS-03-07 | API | Auth | เรียกโดยไม่มี token | - | 1. GET /api/tasks ไม่ใส่ Authorization | - | HTTP 401 | Vitest | Tester | Pass | |
 
 ## TS-04 History
@@ -63,8 +63,8 @@
 | TS-04-01 | API | Record | บันทึก pomodoro ที่เสร็จ | - | 1. POST /api/history ส่ง focusMin | focusMin=25 | HTTP 201, status=success | Vitest | Tester | Pass | |
 | TS-04-02 | API | Summary | ดูสรุปรายวัน | บันทึกไว้ 2 ครั้ง ครั้งละ 25 | 1. GET /api/history/summary?date=... | date=2026-01-01 | pomodoroCount=2, totalFocusMin=50 | Vitest | Tester | Pass | ใช้วันที่สุ่มในอดีตแทน 2026-01-01 และเทียบก่อน/หลัง (+2 รอบ, +50 นาที) |
 | TS-04-03 | API | Summary | วันที่ไม่มีข้อมูล | - | 1. GET /api/history/summary วันที่ว่าง | date=2000-01-01 | pomodoroCount=0, totalFocusMin=0 | Vitest | Tester | Pass | ใช้วันที่สุ่มในช่วงที่ไม่มีเคสไหนบันทึก (ปี 1900–1949) |
-| TS-04-04 | Unit | Calc | รวม focus minutes | - | 1. เรียก sumFocusMin([25,25,15]) | [25,25,15] | คืน 65 | Vitest | Member 4 | Not Run |  |
-| TS-04-05 | Unit | Format | จัดรูปแบบวันที่เป็น ISO | - | 1. เรียก formatDate(Date) | 2026-01-01T10:00:00Z | คืน '2026-01-01' | Vitest | Member 4 | Not Run |  |
+| TS-04-04 | Unit | Calc | รวม focus minutes | - | 1. เรียก sumFocusMin([25,25,15]) | [25,25,15] | คืน 65 | Vitest | Member 4 | Pass | `backend/history-service/src/lib/history.test.ts` |
+| TS-04-05 | Unit | Format | จัดรูปแบบวันที่เป็น ISO | - | 1. เรียก formatDate(Date) | 2026-01-01T10:00:00Z | คืน '2026-01-01' | Vitest | Member 4 | Pass | `backend/history-service/src/lib/history.test.ts` |
 | TS-04-06 | API | Validation | focusMin ติดลบ | - | 1. POST /api/history focusMin=-5 | focusMin=-5 | HTTP 400, status=error | Vitest | Tester | Pass | |
 
 ## TS-05 Notification
@@ -73,8 +73,8 @@
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | TS-05-01 | API | Event | ส่ง event แจ้งเตือนผ่าน API | - | 1. POST /api/notify type=timer_end | type=timer_end, message=หมดเวลา! | HTTP 200, status=success | Vitest | Tester | Pass | |
 | TS-05-02 | API | Stream | Client รับ event ผ่าน SSE | เปิด connection /api/notify/stream | 1. เปิด SSE<br>2. POST /api/notify<br>3. อ่าน event | type=timer_end | ได้ event ที่มี type, message, time ตรงกับที่ส่ง | Vitest | Tester | Pass | ส่ง message ไม่ซ้ำแล้วรอเฉพาะ event นั้น |
-| TS-05-03 | Unit | Message | สร้างข้อความตามประเภท | - | 1. เรียก buildMessage('focus_end') | type=focus_end | คืนข้อความ 'หมดเวลาโฟกัสแล้ว พักได้เลย' (หรือที่ทีมกำหนด) | Vitest | Member 5 | Not Run |  |
-| TS-05-04 | Unit | Validation | type ไม่รู้จักต้องถูกปฏิเสธ | - | 1. เรียก isValidType('abc') | type=abc | คืน false | Vitest | Member 5 | Not Run |  |
+| TS-05-03 | Unit | Message | สร้างข้อความตามประเภท | - | 1. เรียก buildMessage('focus_end') | type=focus_end | คืนข้อความ 'หมดเวลาโฟกัสแล้ว พักได้เลย' (หรือที่ทีมกำหนด) | Vitest | Member 5 | Pass | `backend/notification-service/src/lib/notification.test.ts` |
+| TS-05-04 | Unit | Validation | type ไม่รู้จักต้องถูกปฏิเสธ | - | 1. เรียก isValidType('abc') | type=abc | คืน false | Vitest | Member 5 | Pass | `backend/notification-service/src/lib/notification.test.ts` |
 | TS-05-05 | API | Validation | ส่ง type ไม่ถูกต้องผ่าน API | - | 1. POST /api/notify type=abc | type=abc | HTTP 400, status=error | Vitest | Tester | Pass | |
 
 ## Integration
