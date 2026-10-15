@@ -1,0 +1,77 @@
+name: history-service
+
+on:
+  # ทุก PR ที่แก้ไฟล์ของ history-service: รัน test + ลอง build image
+  pull_request:
+    paths:
+      - "backend/history-service/**"
+      - ".github/workflows/history-service.yml"
+  push:
+    # merge เข้า main แล้วรัน test ซ้ำอีกรอบ
+    branches: [main]
+    paths:
+      - "backend/history-service/**"
+      - ".github/workflows/history-service.yml"
+    # push tag เช่น history-service-v1.0.0 จะ release image ขึ้น Docker Hub (paths ไม่มีผลกับ tag)
+    tags: ["history-service-v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/history-service
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/history-service/package-lock.json
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+  # เช็คว่า Dockerfile ยัง build ผ่าน ตั้งแต่ตอน PR (ไม่ push ขึ้น Docker Hub)
+  docker-build:
+    if: github.event_name == 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: backend/history-service
+          push: false
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/history-service-v')
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # ตัดชื่อ tag history-service-v1.0.0 ให้เหลือ 1.0.0
+      - id: version
+        run: echo "version=${GITHUB_REF_NAME#history-service-v}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/build-push-action@v7
+        with:
+          context: backend/history-service
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/history-service:${{ steps.version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/history-service:latest
