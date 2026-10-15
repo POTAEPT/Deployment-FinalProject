@@ -1,0 +1,77 @@
+name: task-service
+
+on:
+  # ทุก PR ที่แก้ไฟล์ของ task-service: รัน test + ลอง build image
+  pull_request:
+    paths:
+      - "backend/task-service/**"
+      - ".github/workflows/task-service.yml"
+  push:
+    # merge เข้า main แล้วรัน test ซ้ำอีกรอบ
+    branches: [main]
+    paths:
+      - "backend/task-service/**"
+      - ".github/workflows/task-service.yml"
+    # push tag เช่น task-service-v1.0.0 จะ release image ขึ้น Docker Hub (paths ไม่มีผลกับ tag)
+    tags: ["task-service-v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/task-service
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/task-service/package-lock.json
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+  # เช็คว่า Dockerfile ยัง build ผ่าน ตั้งแต่ตอน PR (ไม่ push ขึ้น Docker Hub)
+  docker-build:
+    if: github.event_name == 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: backend/task-service
+          push: false
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/task-service-v')
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # ตัดชื่อ tag task-service-v1.0.0 ให้เหลือ 1.0.0
+      - id: version
+        run: echo "version=${GITHUB_REF_NAME#task-service-v}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/build-push-action@v7
+        with:
+          context: backend/task-service
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/task-service:${{ steps.version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/task-service:latest
