@@ -1,5 +1,5 @@
 # รันทั้งระบบในเครื่อง: docker compose up -d --build --wait
-# ตอนนี้มี auth-service + frontend (http://localhost:8080) service อื่นเพิ่มต่อใน services: ได้เลย
+# รันทั้งระบบ 5 service + frontend (เปิดเว็บที่ http://localhost:8080)
 
 services:
   auth-service:
@@ -22,6 +22,13 @@ services:
     environment:
       PORT: 3005
 
+  history-service:
+    build: ./backend/history-service
+    ports:
+      - "3004:3004"
+    environment:
+      PORT: 3004
+
   task-service:
     build: ./backend/task-service
     ports:
@@ -43,8 +50,9 @@ services:
       FOCUS_SECONDS: ${FOCUS_SECONDS:-1500}
       SHORT_BREAK_SECONDS: ${SHORT_BREAK_SECONDS:-300}
       LONG_BREAK_SECONDS: ${LONG_BREAK_SECONDS:-900}
-    # history-service ยังไม่มี (timer เรียก history แบบ best-effort ไม่พัง) เติมใน depends_on เมื่อเพิ่ม history แล้ว
     depends_on:
+      history-service:
+        condition: service_healthy
       notification-service:
         condition: service_healthy
 
@@ -61,6 +69,8 @@ services:
       timer-service:
         condition: service_healthy
       task-service:
+        condition: service_healthy
+      history-service:
         condition: service_healthy
 
 volumes:
