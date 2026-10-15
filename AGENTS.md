@@ -14,7 +14,7 @@
 | Notification (แจ้งเตือนผ่าน SSE) | `backend/notification-service` | 3005 |
 | Frontend (React + Vite) | `frontend` | 5173 (dev), 8080 (Docker) |
 
-Stack: Node.js 22 + Express + TypeScript (backend), React + Vite + TypeScript + Tailwind CSS v4 (frontend), Vitest (unit test), Vitest + supertest (API test ในโฟลเดอร์ของ service), Vitest (integration test ข้าม service ในโฟลเดอร์ `tests/`)
+Stack: Node.js 22 + Express + TypeScript (backend), React + Vite + TypeScript + Tailwind CSS v4 (frontend), Vitest (unit test ในโฟลเดอร์ของ service), Vitest (API + integration test ยิง service จริงในโฟลเดอร์ `tests/`)
 
 ## เอกสารที่ต้องอ่านก่อนเขียนโค้ด (แหล่งความจริง)
 อย่าเดา ให้อ่านไฟล์เหล่านี้ใน `docs/` และ **ทำตามเอกสาร** ถ้าเอกสารกับโค้ดขัดกัน ให้บอกผู้ใช้แทนที่จะเลือกเอง
@@ -58,8 +58,9 @@ npm run build    # build เป็น JavaScript ในโฟลเดอร์ 
 - **Backend:** ทุก service ต้องมี `GET /health` ตอบ `{"status":"ok"}` และ error ทุกตัวตอบรูปแบบ `{"status":"error","message":"..."}` ตามตารางใน `docs/api-contract.md`
 - **โครงสร้างไฟล์ใน service:** แยก `src/app.ts` (สร้างแอป) ออกจาก `src/index.ts` (เปิด port) และแยก logic เป็นฟังก์ชันล้วนไว้ในโฟลเดอร์ย่อย (เช่น `utils/` หรือ `lib/`) เพื่อให้ Unit test ได้โดยไม่ต้องเปิดเซิร์ฟเวอร์ ดูตัวอย่างจาก `backend/auth-service`
 - **Unit test:** ใช้ Vitest ไฟล์ชื่อ `*.test.ts` ต้องไม่ใช้ network และไม่พึ่ง service อื่น แต่ละ service ต้องมีอย่างน้อย 2 เคสตาม `docs/test-spec.md`
-- **API test:** ใช้ Vitest + supertest ยิงเข้า `createApp()` ในโปรเซสเดียวกันได้ (ไม่ต้องเปิด port) แต่ห้ามเรียก service อื่นหรือ network ภายนอก อยู่ในโฟลเดอร์ของ service และรันใน job `test`
-- **Integration test:** อยู่ที่ `tests/` ที่ root ใช้ Vitest ยิง `http://localhost:300x` ของ service ที่ยกด้วย `docker compose` (Tester เป็นคนเขียน รันใน job `integration-tests`)
+- **API + Integration test:** อยู่ที่ `tests/` ที่ root (Tester เป็นคนเขียน) ใช้ Vitest + `fetch` ยิง `http://localhost:300x` ของ service ที่ยกด้วย `docker compose` รันใน job `integration-tests` ไม่ใช้ supertest และไม่เขียน API test ในโฟลเดอร์ของ service
+  - ข้อมูลต้องไม่ซ้ำทุกรอบ (เช่น `testuser1-<suffix>`) และเทียบก่อน/หลัง ห้ามคาดว่าข้อมูลเริ่มที่ 0 ห้ามพึ่งลำดับไฟล์
+  - timer มีตัวเดียวทั้งระบบ ต้อง reset ก่อน/หลังเคสที่ใช้ timer
 - **Frontend:** ใช้สีและ component ตาม `docs/design-system.md` เท่านั้น ห้ามใส่สี hex ตรงๆ ในโค้ด ให้ใช้ชื่อ token (`bg-focus`, `text-ink` ฯลฯ) ที่ประกาศใน `@theme` ของ `frontend/src/index.css` และต้องออกแบบสถานะ Loading / Error / Empty ของทุกหน้าที่เรียก API
 - **Docker:** Dockerfile แบบ multi-stage บน `node:22-alpine` และแต่ละ service ปล่อยเวอร์ชันด้วย git tag `<service>-vX.Y.Z` (เช่น `auth-service-v1.0.0`) ไม่ใช้ tag `v1.0.0` ล้วนๆ
 - ใช้ `npm ci` ใน Dockerfile และ CI ดังนั้นต้อง commit `package-lock.json` เสมอ

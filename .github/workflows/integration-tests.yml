@@ -1,0 +1,58 @@
+name: integration-tests
+
+on:
+  # ทุก PR / push main ที่แก้ backend, เทสต์ หรือ compose: ยกทั้งระบบแล้วยิง API จริง
+  pull_request:
+    paths:
+      - "backend/**"
+      - "tests/**"
+      - "docker-compose.yml"
+      - ".github/workflows/integration-tests.yml"
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "tests/**"
+      - "docker-compose.yml"
+      - ".github/workflows/integration-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # ใช้ทั้งตอน docker compose up (timer-service) และตอนรันเทสต์ (ค่าที่คาดหวัง)
+      # 3 วินาทีพอให้ IT-03 / IT-04 จบเร็ว แต่ไม่สั้นจนเทสต์สุ่มพังบนเครื่องช้า
+      FOCUS_SECONDS: 3
+    steps:
+      - uses: actions/checkout@v7
+
+      # ยกเฉพาะ backend (ไม่ต้องใช้ frontend) แล้วรอจน healthcheck ผ่านทุกตัว
+      - name: Start backend services
+        run: docker compose up -d --build --wait auth-service timer-service task-service history-service notification-service
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tests/package-lock.json
+
+      - name: Install test dependencies
+        working-directory: tests
+        run: npm ci
+
+      - name: Run API + integration tests
+        working-directory: tests
+        run: npx vitest run --reporter=verbose
+
+      # เทสต์พังให้พิมพ์ log ของทุก service ไว้หาสาเหตุ
+      - name: Show service logs
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop services
+        if: always()
+        run: docker compose down -v

@@ -6,8 +6,8 @@
 | บทบาท | สมาชิก | หน้าที่หลัก |
 |---|---|---|
 | Project Manager (PM) | _ชื่อ_ | วางแผน ตั้ง repo / Secrets / Project board, ติดตามงาน, ดูแล release |
-| Tester | _ชื่อ_ | Test Spec, integration test ข้าม service (Vitest ใน `tests/`), job `integration-tests` ใน CI |
-| Developer | ทุกคน | เขียน service ของตัวเอง + Unit test และ API test (Vitest + supertest) + Dockerfile + pipeline ของตัวเอง |
+| Tester | _ชื่อ_ | Test Spec, API + integration test (Vitest ใน `tests/`), job `integration-tests` ใน CI |
+| Developer | ทุกคน | เขียน service ของตัวเอง + Unit test (Vitest) + Dockerfile + pipeline ของตัวเอง |
 
 | Service | เจ้าของ | Parent issue |
 |---|---|---|
@@ -28,7 +28,7 @@
 | 1. Backend | แต่ละคนทำ service ของตัวเอง (API + Unit test) | ทุก service รันได้และ `npm test` ผ่าน | _TBD_ |
 | 2. Container + CI/CD | Dockerfile, workflow ต่อ service, `docker-compose.yml` + healthcheck | PR รัน test อัตโนมัติ, `docker compose up` ขึ้นครบ | _TBD_ |
 | 3. Frontend | หน้า Login, Timer, Task, History, Notification | ใช้งานครบ flow บนเบราว์เซอร์ | _TBD_ |
-| 4. ทดสอบรวม | Integration test ข้าม service ด้วย Vitest (`tests/`), job `integration-tests` | เคสใน Test Spec ผ่านและรันใน CI ได้ | _TBD_ |
+| 4. ทดสอบรวม | API + Integration test ด้วย Vitest (`tests/`) ยิง service จริงที่ยกด้วย docker compose, job `integration-tests` | เคสใน Test Spec ผ่านและรันใน CI ได้ | _TBD_ |
 | 5. Release + นำเสนอ | tag `<service>-v1.0.0` ของแต่ละ service และ `frontend-v1.0.0` (เช่น `auth-service-v1.0.0`), ตรวจ image บน Docker Hub, ซ้อม demo | image ครบพร้อม version, ทุกคนอธิบายส่วนตัวเองได้ | _TBD_ |
 
 เฟส 1 และ 3 ทำขนานกันได้ (frontend ใช้ API contract เป็นหลัก ระหว่างรอ service จริงใช้ข้อมูลจำลองไปก่อน)
@@ -44,8 +44,8 @@
 | Image ขึ้น Docker Hub + Release version | tag `<service>-vX.Y.Z` | ยังไม่เสร็จ |
 | Test Spec ≥ จำนวนสมาชิก | `docs/test-spec.md` (36 เคส) | ยังไม่เสร็จ |
 | Unit test ≥ จำนวนสมาชิก | Vitest ≥ 2 เคสต่อ service (10 เคส) | ยังไม่เสร็จ |
-| Tester ทำ automation บน pipeline | Vitest integration test (`tests/`) ใน job `integration-tests` | ยังไม่เสร็จ |
-| Dev ทำ unit + API test | Vitest + supertest ในโฟลเดอร์ service ตาม Test Spec | ยังไม่เสร็จ |
+| Tester ทำ automation บน pipeline | Vitest API + integration test (`tests/`, 26 เคส) ใน job `integration-tests` | ยังไม่เสร็จ |
+| Dev ทำ unit test | Vitest ในโฟลเดอร์ service ตาม Test Spec | ยังไม่เสร็จ |
 | ทุกคนอธิบายส่วนของตัวเองได้ | ซ้อมก่อนนำเสนอ | ยังไม่เสร็จ |
 
 > ข้อที่ยังไม่แน่ใจ: ข้อกำหนดเรื่อง "แยก project" ในโจทย์ ตอนนี้ทีมเลือก monorepo (1 repo, แยกโฟลเดอร์ + pipeline + image + version ต่อ service) ควรยืนยันกับอาจารย์ ถ้าอาจารย์ต้องการแยก repo ต่อ service ต้องย้ายโฟลเดอร์ใน `backend/` ออกเป็น repo ละตัว -->

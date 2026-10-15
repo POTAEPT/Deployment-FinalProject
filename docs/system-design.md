@@ -97,14 +97,14 @@ flowchart LR
 - ทุก service มี workflow ของตัวเอง ใช้ `paths:` ให้รันเฉพาะเมื่อไฟล์ของ service นั้นเปลี่ยน
 - Release ทำด้วย **git tag** รูปแบบ `<service>-vX.Y.Z` แล้ว workflow สร้าง image ชื่อ `<DOCKERHUB_USERNAME>/<service>` พร้อม tag เวอร์ชันและ `latest`
 - Secrets ที่ใช้: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`
-- `integration-tests` รัน `docker compose up -d --build --wait` (รอจน healthcheck `/health` ผ่าน) แล้วรัน Vitest ใน `tests/` ยิง API จริงข้าม service
+- `integration-tests` รัน `docker compose up -d --build --wait` (รอจน healthcheck `/health` ผ่าน) (เฉพาะ backend, `FOCUS_SECONDS=3`) แล้วรัน Vitest ใน `tests/` ยิง API จริง ทั้งเคส API และ Integration
 
 ## 8. ทดสอบ
 
 | ชั้น | เครื่องมือ | ผู้เขียน | ทดสอบอะไร |
 |---|---|---|---|
-| Unit | Vitest | Developer ของแต่ละ service | ฟังก์ชันเดี่ยว ไม่ใช้ network |
-| API | Vitest + supertest | Developer ของแต่ละ service | endpoint ของ service ตาม Test Spec ยิงเข้าแอปในโปรเซสเดียวกัน (ไม่เปิด port ไม่เรียก service อื่น) รันใน job `test` |
-| Integration | Vitest (`tests/` ที่ root) | Tester | การทำงานข้าม service (IT-01 ถึง IT-04) ยิง `http://localhost:300x` หลัง `docker compose up` รันใน job `integration-tests` |
+| Unit | Vitest (ในโฟลเดอร์ service) | Developer ของแต่ละ service | ฟังก์ชันเดี่ยว ไม่ใช้ network รันใน job `test` ของ service |
+| API | Vitest (`tests/` ที่ root) | Tester | endpoint ของแต่ละ service ตาม Test Spec ยิง `http://localhost:300x` หลัง `docker compose up` รันใน job `integration-tests` |
+| Integration | Vitest (`tests/` ที่ root) | Tester | การทำงานข้าม service (IT-01 ถึง IT-04) รันใน job `integration-tests` เช่นกัน |
 
 ดูรายการเคสทั้งหมดที่ [test-spec.md](test-spec.md)

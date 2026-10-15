@@ -1,0 +1,17 @@
+{
+  "name": "pomodoro-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "API + integration tests: ยิง HTTP ไปที่ service จริงที่ยกด้วย docker compose",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "vitest": "^5.0.4"
+  }
+}
