@@ -41,7 +41,7 @@
 ภาพรวมทางเทคนิคดูที่ [architecture.md](architecture.md) และ [system-design.md](system-design.md)
 
 ## Tech Stack
-React + Vite + TypeScript + Tailwind (frontend) · Node.js 22 + Express + TypeScript (backend) · Vitest (unit test) · Vitest + supertest (API test) · Vitest (integration test ข้าม service) · Docker + docker compose · GitHub Actions · Docker Hub
+React + Vite + TypeScript + Tailwind (frontend) · Node.js 22 + Express + TypeScript (backend) · Vitest (unit test, API test และ integration test) · Docker + docker compose · GitHub Actions · Docker Hub
 
 ## วิธีทำงานของทีม
 - GitHub Flow: Issue → branch → Pull Request → review → Squash merge (ดู [git-workflow.md](git-workflow.md))
