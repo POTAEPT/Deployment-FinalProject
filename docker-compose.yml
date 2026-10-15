@@ -15,6 +15,13 @@ services:
       # ใช้ named volume (ไม่ใช่โฟลเดอร์ในเครื่อง) เพื่อให้ได้สิทธิ์ node:node จาก image
       - auth-data:/app/data
 
+  notification-service:
+    build: ./backend/notification-service
+    ports:
+      - "3005:3005"
+    environment:
+      PORT: 3005
+
   frontend:
     build: ./frontend
     ports:
@@ -22,6 +29,8 @@ services:
     # รอ backend ผ่าน healthcheck ก่อนค่อยเปิดหน้าเว็บ (เพิ่ม service อื่นตรงนี้เมื่อมีแล้ว)
     depends_on:
       auth-service:
+        condition: service_healthy
+      notification-service:
         condition: service_healthy
 
 volumes:
