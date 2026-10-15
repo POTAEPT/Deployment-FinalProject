@@ -12,6 +12,7 @@ export default function HomePage() {
   const { username, logout } = useAuth();
   // TimerCard บอกโหมดผ่าน onModeChange แล้วพื้นหลังทั้งหน้าเปลี่ยนสีตาม
   const [mode, setMode] = useState<Mode>("focus");
+  const [historyRefreshKey, setHistoryRefreshKey] = useState(0);
 
   return (
     <main className={`${MODE_BG[mode]} min-h-screen text-white transition-colors duration-500`}>
@@ -26,8 +27,11 @@ export default function HomePage() {
             </Button>
           </div>
         </header>
-        <TimerCard onModeChange={setMode} />
-        <HistorySummary />
+        <TimerCard
+          onModeChange={setMode}
+          onFocusComplete={() => setHistoryRefreshKey((key) => key + 1)}
+        />
+        <HistorySummary refreshKey={historyRefreshKey} />
         <TaskList />
       </div>
     </main>
