@@ -22,6 +22,23 @@ services:
     environment:
       PORT: 3005
 
+  timer-service:
+    build: ./backend/timer-service
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      HISTORY_URL: http://history-service:3004
+      NOTIFY_URL: http://notification-service:3005
+      # ค่าเริ่มต้น 25/5/15 นาที ตอนทดสอบรัน FOCUS_SECONDS=1 docker compose up ... ได้
+      FOCUS_SECONDS: ${FOCUS_SECONDS:-1500}
+      SHORT_BREAK_SECONDS: ${SHORT_BREAK_SECONDS:-300}
+      LONG_BREAK_SECONDS: ${LONG_BREAK_SECONDS:-900}
+    # history-service ยังไม่มี (timer เรียก history แบบ best-effort ไม่พัง) เติมใน depends_on เมื่อเพิ่ม history แล้ว
+    depends_on:
+      notification-service:
+        condition: service_healthy
+
   frontend:
     build: ./frontend
     ports:
@@ -31,6 +48,8 @@ services:
       auth-service:
         condition: service_healthy
       notification-service:
+        condition: service_healthy
+      timer-service:
         condition: service_healthy
 
 volumes:
