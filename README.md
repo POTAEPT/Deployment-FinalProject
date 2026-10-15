@@ -134,13 +134,6 @@ git push origin auth-service-v1.0.1
 | [`docs/test-spec.md`](docs/test-spec.md) | เคสทดสอบทั้ง 36 เคส |
 | [`docs/test-report.md`](docs/test-report.md) | ผลการทดสอบ และคำอธิบายแต่ละชั้นของการทดสอบ |
 
-## ทีม
-
-| บทบาท | สมาชิก |
-|---|---|
-| Project Manager (PM) | _ชื่อ_ |
-| Tester | _ชื่อ_ |
-| Developer | ทุกคน (1 คน 1 service ตามตารางด้านบน) |
 
 ## แก้ปัญหาที่เจอบ่อย
 
