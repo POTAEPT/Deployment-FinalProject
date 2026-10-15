@@ -1,6 +1,6 @@
 # Pomodoro Timer (Microservices)
 
-เว็บจับเวลา Pomodoro (โฟกัส 25 นาที สลับพัก) อ้างอิงหน้าตาจาก [pomofocus.io](https://pomofocus.io/) แบ่งเป็น 5 microservices + 1 frontend อยู่ใน repo เดียว งานกลุ่มวิชา "วางโครงโปรเจกต์และ Deploy ระบบ"
+เว็บจับเวลา Pomodoro (โฟกัส 25 นาที สลับพัก) อ้างอิงหน้าตาจาก [pomofocus.io](https://pomofocus.io/) แบ่งเป็น 5 microservices + 1 frontend อยู่ใน repo เดียว งานกลุ่มวิชา "Dployment & Testing"
 
 [![auth-service](https://github.com/POTAEPT/Deployment-FinalProject/actions/workflows/auth-service.yml/badge.svg)](https://github.com/POTAEPT/Deployment-FinalProject/actions/workflows/auth-service.yml)
 [![timer-service](https://github.com/POTAEPT/Deployment-FinalProject/actions/workflows/timer-service.yml/badge.svg)](https://github.com/POTAEPT/Deployment-FinalProject/actions/workflows/timer-service.yml)
