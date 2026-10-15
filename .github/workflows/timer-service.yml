@@ -1,0 +1,72 @@
+name: timer-service
+
+on:
+  pull_request:
+    paths:
+      - "backend/timer-service/**"
+      - ".github/workflows/timer-service.yml"
+  push:
+    branches: [main]
+    paths:
+      - "backend/timer-service/**"
+      - ".github/workflows/timer-service.yml"
+    tags: ["timer-service-v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/timer-service
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/timer-service/package-lock.json
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+  docker-build:
+    if: github.event_name == 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/build-push-action@v7
+        with:
+          context: backend/timer-service
+          push: false
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/timer-service-v')
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - id: version
+        run: echo "version=${GITHUB_REF_NAME#timer-service-v}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: docker/build-push-action@v7
+        with:
+          context: backend/timer-service
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/timer-service:${{ steps.version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/timer-service:latest
