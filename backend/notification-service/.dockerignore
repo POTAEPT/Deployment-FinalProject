@@ -1,0 +1,9 @@
+# Keep local files and development artifacts out of the Docker build context.
+node_modules
+dist
+coverage
+.env
+.env.*
+**/*.test.ts
+Dockerfile
+.dockerignore
